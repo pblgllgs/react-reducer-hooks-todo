@@ -1,34 +1,30 @@
-import React, { useReducer } from 'react';
-import { todoReducer } from './todoReducer';
-
-
-export const initialState = [
-  {
-    id: new Date().getTime(),
-    description: 'Recolectar piedra del alma'
-  },
-  {
-    id: new Date().getTime()*3,
-    description: 'Recolectar piedra del tiempo'
-  }
-];
+import React, { useEffect } from 'react';
+import { useTodo } from '../hooks';
+import { TodoList, TodoAdd } from './';
 
 export const TodoApp = () => {
+  const { todos, handleDeleteTodo, handleToggleTodo, onHandleTodo } = useTodo();
 
-    // eslint-disable-next-line no-unused-vars
-    const [state, dispatch] = useReducer(todoReducer, initialState);
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <>
-      <h1>TodoApp</h1>
+      <h1>
+        TodoApp({todos.length})<span>pendientes:{}</span>
+      </h1>
       <hr />
-      <ul>
-        {
-          state.map( (item) => {
-            return <li key={item.id}>{item.description}</li>
-          })
-          }
-      </ul>
+      <div className="row">
+        <div className="col-7">
+          <TodoList todos={todos} onDeleteTodo={handleDeleteTodo} onToggleTodo={handleToggleTodo} />
+        </div>
+        <div className="col-5">
+          <h4>Agregar todo</h4>
+          <hr />
+          <TodoAdd onNewTodo={onHandleTodo} />
+        </div>
+      </div>
     </>
   );
 };
